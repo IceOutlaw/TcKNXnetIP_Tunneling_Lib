@@ -60,5 +60,12 @@ VAR_IN_OUT
 	stInData		: ARRAY[*] OF BYTE;
 END_VAR]]></Declaration>
     </Method>
+    <Method Name="M_InterpretNewMessage" Id="{0bed79c4-83e7-459c-8517-2c6a14e1e1b8}">
+      <Declaration><![CDATA[METHOD M_InterpretNewMessage : BOOL
+VAR_INPUT
+	stInData		: BOOL;
+END_VAR
+]]></Declaration>
+    </Method>
   </Itf>
 </TcPlcObject>

@@ -4,6 +4,8 @@
     <Declaration><![CDATA[TYPE ST_KNXnetIP_MessageOfAllGroupAddresses :
 STRUCT
 	aMessage		: ARRAY[0..31, 0..7, 0..255] OF ARRAY[1..255] OF BYTE;
+	TimeStamp		: ARRAY[0..31, 0..7, 0..255] OF DT;
+	NewMessage		: ARRAY[0..31, 0..7, 0..255] OF BOOL;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

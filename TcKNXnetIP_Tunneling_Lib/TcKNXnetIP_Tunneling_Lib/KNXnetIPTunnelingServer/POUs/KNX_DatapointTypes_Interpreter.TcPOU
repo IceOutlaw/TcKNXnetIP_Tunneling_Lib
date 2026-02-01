@@ -146,5 +146,15 @@ END_VAR]]></Declaration>
         <ST><![CDATA[M_InterpretAsUINT8 := stInData[LOWER_BOUND(stInData,1)];]]></ST>
       </Implementation>
     </Method>
+    <Method Name="M_InterpretNewMessage" Id="{0e3df83d-fa35-48fa-b003-a58eab4d369e}">
+      <Declaration><![CDATA[METHOD M_InterpretNewMessage : BOOL
+VAR_INPUT
+	stInData		: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[M_InterpretNewMessage := stInData;]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>

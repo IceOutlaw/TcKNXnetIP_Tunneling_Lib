@@ -14,6 +14,7 @@ VAR_INPUT
 	                            		                            					
 	sInRemoteHostIPv4Addr				: T_IPv4Addr;									// ipv4 address of the remote host, which should be connected
 	nInRemotePort						: UINT;											// port for communication on remote host
+	DateAndTime							: DT;											// Actuall Date and Time for Timestamp
 END_VAR             		                                        		
 VAR                             		                                        		
 	bInit								: BOOL := FALSE;	                    		
@@ -911,7 +912,9 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF fbReceiveFiFoBuffer.P_G_Count > 0 THEN
+        <ST><![CDATA[MEMSET(ADR(stGroupAddressMessages.NewMessage), 0, SIZEOF(stGroupAddressMessages.NewMessage));
+
+IF fbReceiveFiFoBuffer.P_G_Count > 0 THEN
 	IF M_IsTunnellingReqValid(fbReceiveFiFoBuffer.M_Look()) THEN
 		stMessage := fbReceiveFiFoBuffer.M_Drop();
 		IF M_IsCEMI_L_DataInd(stMessage) THEN
@@ -919,6 +922,12 @@ END_VAR
 			stGroupAddressMessages.aMessage[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
 												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
 												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := stcEMI_L_DataInd.Data;
+			stGroupAddressMessages.NewMessage[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := TRUE;
+			stGroupAddressMessages.TimeStamp[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := DateAndTime;
 		END_IF
 	
 	ELSIF M_IsTunnellingReqValid(fbReceiveFiFoBuffer.M_LookLast()) THEN
@@ -928,6 +937,12 @@ END_VAR
 			stGroupAddressMessages.aMessage[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
 												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
 												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := stcEMI_L_DataInd.Data;
+			stGroupAddressMessages.NewMessage[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := TRUE;
+			stGroupAddressMessages.TimeStamp[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := DateAndTime;
 		ELSIF M_IsCEMI_L_DataCon(stMessage) THEN
 			stcEMI_L_DataCon := M_ParseTunnellingRequest(stMessage);
 			// confirm bit detection
@@ -1803,5 +1818,257 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
+    <LineIds Name="KNXnetIPTunnelingServer">
+      <LineId Id="3" Count="6" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_AddHPAI">
+      <LineId Id="3" Count="9" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_AreHostAndPortValid">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_BuildDisconnectResponse">
+      <LineId Id="3" Count="14" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_BuildTunnelConnectionStateRequest">
+      <LineId Id="3" Count="23" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_BuildTunnelConnectRequest">
+      <LineId Id="3" Count="32" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_BuildTunnelDisconnectRequest">
+      <LineId Id="3" Count="27" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_BuildTunnellingAck">
+      <LineId Id="3" Count="16" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_BuildTunnellingRequest">
+      <LineId Id="3" Count="58" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_Connect">
+      <LineId Id="3" Count="7" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_Disconnect">
+      <LineId Id="3" Count="7" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_GetHeader">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_GetHighByte">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_GetLowByte">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_Init">
+      <LineId Id="3" Count="2" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_IsCEMI_L_DataCon">
+      <LineId Id="3" Count="4" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_IsCEMI_L_DataInd">
+      <LineId Id="3" Count="4" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_IsConnectionStateResponseValid">
+      <LineId Id="3" Count="10" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_IsConnectResponseValid">
+      <LineId Id="3" Count="14" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_IsDisconnectReqValid">
+      <LineId Id="3" Count="14" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_IsDisconnectResponseValid">
+      <LineId Id="3" Count="14" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_IsTunnellingAckValid">
+      <LineId Id="3" Count="4" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_IsTunnellingReqValid">
+      <LineId Id="3" Count="5" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ManagerConnection">
+      <LineId Id="3" Count="214" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ManagerConvertReceived">
+      <LineId Id="31" Count="41" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ManagerReceiving">
+      <LineId Id="3" Count="51" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ManagerTransmit">
+      <LineId Id="3" Count="100" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_Parse_cEMI_L_DataCon">
+      <LineId Id="3" Count="31" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_Parse_cEMI_L_DataInd">
+      <LineId Id="3" Count="31" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ParseCommonHeader">
+      <LineId Id="3" Count="6" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ParseConnectionHeader">
+      <LineId Id="3" Count="4" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ParseConnectionStateResponse">
+      <LineId Id="3" Count="8" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ParseConnectResponse">
+      <LineId Id="3" Count="23" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ParseDisconnectRequest">
+      <LineId Id="3" Count="19" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ParseDisconnectResponse">
+      <LineId Id="3" Count="8" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ParseServiceType">
+      <LineId Id="3" Count="2" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_ParseTunnellingRequest">
+      <LineId Id="3" Count="7" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_RefreshSequenceCounter">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_Reset">
+      <LineId Id="3" Count="9" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_SetPhysicalAddressTunnelingServer">
+      <LineId Id="3" Count="2" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.M_TransmitMessage">
+      <LineId Id="3" Count="5" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_ConnectionStateResponseReceived.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_ConnectionStateResponseReceived.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_ConnectResponseReceived.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_ConnectResponseReceived.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_DisconnectReceived.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_DisconnectReceived.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_DisconnectResponseReceived.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_DisconnectResponseReceived.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_G_GroupAddressMessages.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_G_GroupAddressNewMessages.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_G_IsConnected.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_G_IsConnected.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_G_IsConnecting.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_G_IsConnecting.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_G_IsDisconnecting.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_G_IsDisconnecting.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_G_PhysicalAddress.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_Reconnect.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_Reconnect.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_SequenceCounterReceive.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_SequenceCounterReceive.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_SequenceCounterTransmit.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_SequenceCounterTransmit.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_Socket.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_TransmitTimeout.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_TransmitTimeout.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_TunnellingAckReceived.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_TunnellingAckReceived.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_TunnellingReqReceived.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="KNXnetIPTunnelingServer.P_TunnellingReqReceived.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>
