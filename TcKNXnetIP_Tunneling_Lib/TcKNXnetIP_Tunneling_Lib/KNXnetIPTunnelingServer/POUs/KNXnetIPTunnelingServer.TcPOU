@@ -1504,6 +1504,7 @@ END_VAR
 VAR
 	bSameMessageAsLast		: BOOL;
 	i						: UDINT;
+	bNewMessage				: BOOL;
 END_VAR
 VAR_INST
 	stLastGroupAddress		: ST_KNX_GroupAddress;			// last stored group address
@@ -1515,11 +1516,21 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF NOT P_G_IsConnected THEN RETURN; END_IF
 // only appending possible if connection is done
-stMessage := M_BuildTunnellingRequest(stInGroupAddress, stInMessage);
-fbTransmitFiFoBuffer.M_Append(stMessage);
-stLastGroupAddress 	:= stInGroupAddress;
-stLastMessage		:= stInMessage;
-M_TransmitMessage 	:= TRUE;]]></ST>
+FOR i := 1 TO SIZEOF(stInMessage.aMessage) DO
+	IF stInMessage.aMessage[i] <> P_G_GroupAddressMessages.aMessage[stInGroupAddress.nFirst,stInGroupAddress.nMiddle,stInGroupAddress.nLow][i] THEN
+		bNewMessage := TRUE;
+		EXIT;
+	END_IF
+END_FOR
+IF bNewMessage THEN
+	stMessage := M_BuildTunnellingRequest(stInGroupAddress, stInMessage);
+	P_G_GroupAddressMessages.aMessage[stInGroupAddress.nFirst,stInGroupAddress.nMiddle,stInGroupAddress.nLow]:=stInMessage.aMessage;
+	fbTransmitFiFoBuffer.M_Append(stMessage);
+	stLastGroupAddress 	:= stInGroupAddress;
+	stLastMessage		:= stInMessage;
+	M_TransmitMessage 	:= TRUE;
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Property Name="P_ConnectionStateResponseReceived" Id="{45394663-dc00-47b5-8e5f-0a3e0ea87584}" FolderPath="Manager\">
@@ -1977,7 +1988,7 @@ END_VAR
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="KNXnetIPTunnelingServer.M_TransmitMessage">
-      <LineId Id="3" Count="5" />
+      <LineId Id="25" Count="15" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="KNXnetIPTunnelingServer.P_ConnectionStateResponseReceived.Get">
@@ -2005,9 +2016,6 @@ END_VAR
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="KNXnetIPTunnelingServer.P_G_GroupAddressMessages.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="KNXnetIPTunnelingServer.P_G_GroupAddressNewMessages.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="KNXnetIPTunnelingServer.P_G_IsConnected.Get">
