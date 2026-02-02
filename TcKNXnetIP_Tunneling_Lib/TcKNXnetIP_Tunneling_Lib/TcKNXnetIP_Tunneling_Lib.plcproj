@@ -9,7 +9,7 @@
     <WriteProductVersion>false</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>TcKNXnetIP_Tunneling_Lib</Name>
-    <ProgramVersion>3.1.4026.19</ProgramVersion>
+    <ProgramVersion>3.1.4026.20</ProgramVersion>
     <Application>{8a6aa856-be00-41ce-ac3c-17a2b6529ace}</Application>
     <TypeSystem>{d5f8170d-e343-43f3-9acc-f43caa52c492}</TypeSystem>
     <Implicit_Task_Info>{ad323f36-f317-4408-b3a4-8c9cbb734b7d}</Implicit_Task_Info>
@@ -17,7 +17,7 @@
     <Implicit_Jitter_Distribution>{b1568fd3-82ca-437f-aeda-95cad9461ace}</Implicit_Jitter_Distribution>
     <LibraryReferences>{b1a46f2d-2f37-46ba-a676-50a7eadc6920}</LibraryReferences>
     <Company>Gauggel</Company>
-    <Released>true</Released>
+    <Released>false</Released>
     <Title>TcKNXnetIP_Tunneling_Lib</Title>
     <ProjectVersion>1.0.0</ProjectVersion>
     <AllowChecksForLibrary>true</AllowChecksForLibrary>
@@ -240,13 +240,19 @@ The author shall not be held liable for any damages arising from the use of this
   <ProjectExtensions>
     <PlcProjectOptions>
       <XmlArchive>
-        <Data>
-          <o xml:space="preserve" t="OptionKey">
+  <Data>
+    <o xml:space="preserve" t="OptionKey">
       <v n="Name">"&lt;ProjectRoot&gt;"</v>
       <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
         <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
         <o>
           <v n="Name">"{192FAD59-8248-4824-A8DE-9177C94C195A}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" />
+        </o>
+        <v>{246001F4-279D-43AC-B241-948EB31120E1}</v>
+        <o>
+          <v n="Name">"{246001F4-279D-43AC-B241-948EB31120E1}"</v>
           <d n="SubKeys" t="Hashtable" />
           <d n="Values" t="Hashtable" />
         </o>
@@ -293,6 +299,12 @@ The author shall not be held liable for any damages arising from the use of this
             <v>228,410,5410</v>
           </d>
         </o>
+        <v>{eeeeeeee-3909-4298-8022-501ac3238667}</v>
+        <o>
+          <v n="Name">"{eeeeeeee-3909-4298-8022-501ac3238667}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" />
+        </o>
         <v>{F66C7017-BDD8-4114-926C-81D6D687E35F}</v>
         <o>
           <v n="Name">"{F66C7017-BDD8-4114-926C-81D6D687E35F}"</v>
@@ -305,14 +317,14 @@ The author shall not be held liable for any damages arising from the use of this
       </d>
       <d n="Values" t="Hashtable" />
     </o>
-        </Data>
-        <TypeList>
-          <Type n="Boolean">System.Boolean</Type>
-          <Type n="Hashtable">System.Collections.Hashtable</Type>
-          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
-          <Type n="String">System.String</Type>
-        </TypeList>
-      </XmlArchive>
+  </Data>
+  <TypeList>
+    <Type n="Boolean">System.Boolean</Type>
+    <Type n="Hashtable">System.Collections.Hashtable</Type>
+    <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+    <Type n="String">System.String</Type>
+  </TypeList>
+</XmlArchive>
     </PlcProjectOptions>
   </ProjectExtensions>
 </Project>

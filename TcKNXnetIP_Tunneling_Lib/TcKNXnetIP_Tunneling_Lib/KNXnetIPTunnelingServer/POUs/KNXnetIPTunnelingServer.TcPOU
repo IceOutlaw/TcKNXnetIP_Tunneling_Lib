@@ -14,6 +14,7 @@ VAR_INPUT
 	                            		                            					
 	sInRemoteHostIPv4Addr				: T_IPv4Addr;									// ipv4 address of the remote host, which should be connected
 	nInRemotePort						: UINT;											// port for communication on remote host
+	DateAndTime							: DT;											// Actuall Date and Time for Timestamp
 END_VAR             		                                        		
 VAR                             		                                        		
 	bInit								: BOOL := FALSE;	                    		
@@ -354,16 +355,11 @@ nWord := F_KNX_GROUPADDRESS_TO_WORD(stInGroupAddress);
 stResult.aMessage[17]	:= M_GetHighByte(nWord);
 stResult.aMessage[18]	:= M_GetLowByte(nWord);
 	// Length, number of NPDU octets, TPCI octet not included!
-IF stInMessage.nByteLength <= 1 THEN
-	stResult.aMessage[19]	:= UDINT_TO_BYTE(stInMessage.nByteLength);
-	nTotalLength			:= nTotalLength - 1;
-ELSE
-	stResult.aMessage[19]	:= UDINT_TO_BYTE(stInMessage.nByteLength + 1);
-END_IF
+stResult.aMessage[19]	:= UDINT_TO_BYTE(stInMessage.nByteLength+1);
 	// TPCI/APCI
 stResult.aMessage[20]	:= 16#00;
 stResult.aMessage[21]	:= 16#80;	// GroupValueWrite
-IF stInMessage.nByteLength <= 1 THEN
+IF stInMessage.nByteLength = 0 THEN
 	stResult.aMessage[21]	:= stResult.aMessage[21] OR stInMessage.aMessage[1];
 ELSE
 	FOR i := 1 TO UDINT_TO_BYTE(stInMessage.nByteLength) DO
@@ -911,7 +907,9 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF fbReceiveFiFoBuffer.P_G_Count > 0 THEN
+        <ST><![CDATA[MEMSET(ADR(stGroupAddressMessages.aNewMessage), 0, SIZEOF(stGroupAddressMessages.aNewMessage));
+
+IF fbReceiveFiFoBuffer.P_G_Count > 0 THEN
 	IF M_IsTunnellingReqValid(fbReceiveFiFoBuffer.M_Look()) THEN
 		stMessage := fbReceiveFiFoBuffer.M_Drop();
 		IF M_IsCEMI_L_DataInd(stMessage) THEN
@@ -919,6 +917,12 @@ END_VAR
 			stGroupAddressMessages.aMessage[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
 												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
 												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := stcEMI_L_DataInd.Data;
+			stGroupAddressMessages.aNewMessage[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := TRUE;
+			stGroupAddressMessages.aTimeStamp[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := DateAndTime;
 		END_IF
 	
 	ELSIF M_IsTunnellingReqValid(fbReceiveFiFoBuffer.M_LookLast()) THEN
@@ -928,6 +932,12 @@ END_VAR
 			stGroupAddressMessages.aMessage[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
 												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
 												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := stcEMI_L_DataInd.Data;
+			stGroupAddressMessages.aNewMessage[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := TRUE;
+			stGroupAddressMessages.aTimeStamp[stcEMI_L_DataInd.stDestinationGroupAddress.nFirst,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nMiddle,
+												stcEMI_L_DataInd.stDestinationGroupAddress.nLow] := DateAndTime;
 		ELSIF M_IsCEMI_L_DataCon(stMessage) THEN
 			stcEMI_L_DataCon := M_ParseTunnellingRequest(stMessage);
 			// confirm bit detection
@@ -1489,6 +1499,7 @@ END_VAR
 VAR
 	bSameMessageAsLast		: BOOL;
 	i						: UDINT;
+	bNewMessage				: BOOL;
 END_VAR
 VAR_INST
 	stLastGroupAddress		: ST_KNX_GroupAddress;			// last stored group address
@@ -1500,11 +1511,21 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF NOT P_G_IsConnected THEN RETURN; END_IF
 // only appending possible if connection is done
-stMessage := M_BuildTunnellingRequest(stInGroupAddress, stInMessage);
-fbTransmitFiFoBuffer.M_Append(stMessage);
-stLastGroupAddress 	:= stInGroupAddress;
-stLastMessage		:= stInMessage;
-M_TransmitMessage 	:= TRUE;]]></ST>
+FOR i := 1 TO SIZEOF(stInMessage.aMessage) DO
+	IF stInMessage.aMessage[i] <> P_G_GroupAddressMessages.aMessage[stInGroupAddress.nFirst,stInGroupAddress.nMiddle,stInGroupAddress.nLow][i] THEN
+		bNewMessage := TRUE;
+		EXIT;
+	END_IF
+END_FOR
+IF bNewMessage THEN
+	stMessage := M_BuildTunnellingRequest(stInGroupAddress, stInMessage);
+	P_G_GroupAddressMessages.aMessage[stInGroupAddress.nFirst,stInGroupAddress.nMiddle,stInGroupAddress.nLow]:=stInMessage.aMessage;
+	fbTransmitFiFoBuffer.M_Append(stMessage);
+	stLastGroupAddress 	:= stInGroupAddress;
+	stLastMessage		:= stInMessage;
+	M_TransmitMessage 	:= TRUE;
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Property Name="P_ConnectionStateResponseReceived" Id="{45394663-dc00-47b5-8e5f-0a3e0ea87584}" FolderPath="Manager\">

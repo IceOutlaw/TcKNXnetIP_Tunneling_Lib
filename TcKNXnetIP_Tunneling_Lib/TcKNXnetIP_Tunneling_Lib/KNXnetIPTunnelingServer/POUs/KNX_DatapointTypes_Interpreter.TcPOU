@@ -13,109 +13,156 @@ FUNCTION_BLOCK KNX_DatapointTypes_Interpreter IMPLEMENTS I_KNX_DPT_Interpreter
     <Method Name="M_InterpretAs2Bit" Id="{645492f9-18c4-4f90-8fb1-b54d58cb0e2d}">
       <Declaration><![CDATA[METHOD M_InterpretAs2Bit : ST_KNX_DPT_B2
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[M_InterpretAs2Bit.bBit1 := stInData[LOWER_BOUND(stInData,1)].0;
-M_InterpretAs2Bit.bBit2 := stInData[LOWER_BOUND(stInData,1)].1;]]></ST>
+        <ST><![CDATA[M_InterpretAs2Bit.bBit1 := aInData[LOWER_BOUND(aInData,1)].0;
+M_InterpretAs2Bit.bBit2 := aInData[LOWER_BOUND(aInData,1)].1;]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_InterpretAsBool" Id="{2ddcc710-928d-48c3-a3f6-c43b38918035}">
       <Declaration><![CDATA[METHOD M_InterpretAsBool : BOOL
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[M_InterpretAsBool := BYTE_TO_BOOL(stInData[LOWER_BOUND(stInData,1)]);]]></ST>
+        <ST><![CDATA[M_InterpretAsBool := BYTE_TO_BOOL(aInData[LOWER_BOUND(aInData,1)]);]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_InterpretAsDimming" Id="{143d9181-0d00-4d88-a1c7-34f12b72adf9}">
       <Declaration><![CDATA[METHOD M_InterpretAsDimming : ST_KNX_DPT_ControlDimming
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[M_InterpretAsDimming.bControl 	:= stInData[LOWER_BOUND(stInData,1)].3;
-M_InterpretAsDimming.nStepCode	:= stInData[LOWER_BOUND(stInData,1)] AND 16#07;]]></ST>
+        <ST><![CDATA[M_InterpretAsDimming.bControl 	:= aInData[LOWER_BOUND(aInData,1)].3;
+M_InterpretAsDimming.nStepCode	:= aInData[LOWER_BOUND(aInData,1)] AND 16#07;]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_InterpretAsFloat16" Id="{53d6f035-7a63-4f7b-854c-2433a97caaa2}">
       <Declaration><![CDATA[METHOD M_InterpretAsFloat16 : REAL
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 VAR
 	nMantissa		: WORD;
 	nSignMantissa	: INT;
-	nExponent		: INT;
+	//nExponent		: INT;
 	fFloat			: REAL;
+	//nSign			: INT;
+	
+	
+	
+	nExponent		: WORD;
 	nSign			: INT;
+	fMAXValue		: REAL;
+	nValue			: INT;
+	nResult			: WORD;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[nSign 			:= BIT_TO_INT(stInData[LOWER_BOUND(stInData,1)].7);
-nMantissa 		:= SHL(BYTE_TO_WORD(stInData[LOWER_BOUND(stInData,1)]) AND 16#07, 8);
-nMantissa 		:= nMantissa OR BYTE_TO_WORD(stInData[LOWER_BOUND(stInData,1) + 1]);
-nSignMantissa 	:= WORD_TO_INT(nMantissa);
-IF nSign = 1 THEN
-	// negative value
-	nMantissa := NOT nMantissa;
-	nMantissa := nMantissa OR (NOT 16#F800);
-	nSignMantissa := WORD_TO_INT(nMantissa + 1);
-	nSignMantissa := nSignMantissa * -1;
-END_IF
-nExponent := BYTE_TO_INT(stInData[LOWER_BOUND(stInData,1)] AND 16#78);
-M_InterpretAsFloat16 := LREAL_TO_REAL(0.01 * nSignMantissa * EXPT(2, nExponent));
+        <ST><![CDATA[//nSign 			:= BIT_TO_INT(stInData[LOWER_BOUND(stInData,1)].7);
+//nMantissa 		:= SHL(BYTE_TO_WORD(stInData[LOWER_BOUND(stInData,1)]) AND 16#07, 8);
+//nMantissa 		:= nMantissa OR BYTE_TO_WORD(stInData[LOWER_BOUND(stInData,1) + 1]);
+//nSignMantissa 	:= WORD_TO_INT(nMantissa);
+//IF nSign = 1 THEN
+//	// negative value
+//	nMantissa := NOT nMantissa;
+//	nMantissa := nMantissa OR (NOT 16#F800);
+//	nSignMantissa := WORD_TO_INT(nMantissa + 1);
+//	nSignMantissa := nSignMantissa * -1;
+//END_IF
+//nExponent := BYTE_TO_INT(stInData[LOWER_BOUND(stInData,1)] AND 16#78);
+//M_InterpretAsFloat16 := LREAL_TO_REAL(0.01 * nSignMantissa * EXPT(2, nExponent));
 
+
+nResult := SHL(BYTE_TO_WORD(aInData[LOWER_BOUND(aInData,1)]), 8);
+nResult := nResult OR BYTE_TO_WORD(aInData[LOWER_BOUND(aInData,1)+1]);
+
+
+	IF nResult/2048<16 THEN
+		nSign:=1;
+		nExponent:=nResult/2048;
+	ELSE
+		nSign:=-1;
+		nExponent:=(nResult/2048)-16;
+	END_IF
+	fMAXValue:=LREAL_TO_REAL(EXPT(2,nExponent)*20.48);
+	
+	nValue:=UINT_TO_INT(nResult MOD 2048);
+	IF nSign<0 THEN
+		nValue := 2048-nValue;
+	END_IF
+	M_InterpretAsFloat16:=(INT_TO_REAL(nValue)/2048)*fMAXValue*nSign;
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_InterpretAsFloat32" Id="{e202703b-6f0f-4117-b799-0f532539a7b8}">
+      <Declaration><![CDATA[METHOD M_InterpretAsFloat32 : Real
+VAR_IN_OUT
+	aInData		: ARRAY[*] OF BYTE;
+END_VAR
+VAR
+	
+	nWord			: DWORD;
+	pReal			: POINTER TO REAL;
+	i				: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 0 TO 3 DO
+	nWord:=nWord + SHL(aInData[4-i],i*8);
+END_FOR
+
+pReal := ADR(nWord);
+M_InterpretAsFloat32 := pReal^;]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_InterpretAsINT16" Id="{0b31627f-6e0f-441c-bfc7-ded814e29f56}">
       <Declaration><![CDATA[METHOD M_InterpretAsINT16 : INT
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 VAR
 	nResult			: WORD;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[nResult := SHL(BYTE_TO_WORD(stInData[LOWER_BOUND(stInData,1)]), 8);
-nResult := nResult OR BYTE_TO_WORD(stInData[LOWER_BOUND(stInData,1)+1]);
+        <ST><![CDATA[nResult := SHL(BYTE_TO_WORD(aInData[LOWER_BOUND(aInData,1)]), 8);
+nResult := nResult OR BYTE_TO_WORD(aInData[LOWER_BOUND(aInData,1)+1]);
 M_InterpretAsINT16 := WORD_TO_INT(nResult);]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_InterpretAsINT32" Id="{807cc6c2-55d5-47f3-b81a-90819bbd727c}">
       <Declaration><![CDATA[METHOD M_InterpretAsINT32 : DINT
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 VAR
 	nResult			: DWORD;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[nResult := SHL(BYTE_TO_DWORD(stInData[LOWER_BOUND(stInData,1)]), 8*3);
-nResult := nResult OR SHL(BYTE_TO_DWORD(stInData[LOWER_BOUND(stInData,1)+1]), 8*2);
-nResult := nResult OR SHL(BYTE_TO_DWORD(stInData[LOWER_BOUND(stInData,1)+2]), 8);
-nResult := nResult OR BYTE_TO_DWORD(stInData[LOWER_BOUND(stInData,1)+3]);
+        <ST><![CDATA[nResult := SHL(BYTE_TO_DWORD(aInData[LOWER_BOUND(aInData,1)]), 8*3);
+nResult := nResult OR SHL(BYTE_TO_DWORD(aInData[LOWER_BOUND(aInData,1)+1]), 8*2);
+nResult := nResult OR SHL(BYTE_TO_DWORD(aInData[LOWER_BOUND(aInData,1)+2]), 8);
+nResult := nResult OR BYTE_TO_DWORD(aInData[LOWER_BOUND(aInData,1)+3]);
 M_InterpretAsINT32 := DWORD_TO_DINT(nResult);]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_InterpretAsUINT16" Id="{c5321905-d1cb-401c-8b44-6c7dd303848c}">
       <Declaration><![CDATA[METHOD M_InterpretAsUINT16 : UINT
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 VAR
 	nResult			: UINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[nResult := SHL(BYTE_TO_WORD(stInData[LOWER_BOUND(stInData,1)]),8);
-nResult := nResult OR BYTE_TO_WORD(stInData[LOWER_BOUND(stInData,1)+1]);
+        <ST><![CDATA[nResult := SHL(BYTE_TO_WORD(aInData[LOWER_BOUND(aInData,1)]),8);
+nResult := nResult OR BYTE_TO_WORD(aInData[LOWER_BOUND(aInData,1)+1]);
 M_InterpretAsUINT16 := nResult;
 ]]></ST>
       </Implementation>
@@ -123,27 +170,37 @@ M_InterpretAsUINT16 := nResult;
     <Method Name="M_InterpretAsUINT32" Id="{766d3e75-e0c8-4fec-af38-156e514382ed}">
       <Declaration><![CDATA[METHOD M_InterpretAsUINT32 : UDINT
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 VAR
 	nResult			: UDINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[nResult := SHL(BYTE_TO_DWORD(stInData[LOWER_BOUND(stInData,1)]),8*3);
-nResult := nResult OR SHL(BYTE_TO_DWORD(stInData[LOWER_BOUND(stInData,1)]+1),8*2);
-nResult := nResult OR SHL(BYTE_TO_DWORD(stInData[LOWER_BOUND(stInData,1)]+2),8);
-nResult := nResult OR BYTE_TO_DWORD(stInData[LOWER_BOUND(stInData,1)]+3);
+        <ST><![CDATA[nResult := SHL(BYTE_TO_DWORD(aInData[LOWER_BOUND(aInData,1)]),8*3);
+nResult := nResult OR SHL(BYTE_TO_DWORD(aInData[LOWER_BOUND(aInData,1)]+1),8*2);
+nResult := nResult OR SHL(BYTE_TO_DWORD(aInData[LOWER_BOUND(aInData,1)]+2),8);
+nResult := nResult OR BYTE_TO_DWORD(aInData[LOWER_BOUND(aInData,1)]+3);
 M_InterpretAsUINT32 := nResult;]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_InterpretAsUINT8" Id="{96608cde-e332-45f2-af3d-3230e4e9dcea}">
       <Declaration><![CDATA[METHOD M_InterpretAsUINT8 : BYTE
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[M_InterpretAsUINT8 := stInData[LOWER_BOUND(stInData,1)];]]></ST>
+        <ST><![CDATA[M_InterpretAsUINT8 := aInData[LOWER_BOUND(aInData,1)];]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_InterpretNewMessage" Id="{0e3df83d-fa35-48fa-b003-a58eab4d369e}">
+      <Declaration><![CDATA[METHOD M_InterpretNewMessage : BOOL
+VAR_IN_OUT
+	bInData		: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[M_InterpretNewMessage := bInData;]]></ST>
       </Implementation>
     </Method>
   </POU>

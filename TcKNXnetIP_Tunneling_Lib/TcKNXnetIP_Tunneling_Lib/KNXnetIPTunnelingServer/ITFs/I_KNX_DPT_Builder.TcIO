@@ -11,6 +11,13 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Method Name="M_Build3Byte" Id="{a57f8533-beea-466f-bd0e-427c659dd521}">
+      <Declaration><![CDATA[METHOD M_Build3Byte : ST_KNXnetIP_Message
+VAR_INPUT
+	nInValue		: DWORD;
+END_VAR
+]]></Declaration>
+    </Method>
     <Method Name="M_BuildBool" Id="{0922ef82-88ed-474b-8f87-16ed12793e72}">
       <Declaration><![CDATA[METHOD M_BuildBool : ST_KNXnetIP_Message
 VAR_INPUT
@@ -41,6 +48,13 @@ END_VAR]]></Declaration>
       <Declaration><![CDATA[METHOD M_BuildINT32 : ST_KNXnetIP_Message
 VAR_INPUT
 	nInValue	: DINT;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="M_BuildString" Id="{b080c02a-74ba-4ea3-acc5-be93552f3818}">
+      <Declaration><![CDATA[METHOD M_BuildString : ST_KNXnetIP_Message
+VAR_INPUT
+	sInValue	: STRING;
 END_VAR
 ]]></Declaration>
     </Method>

@@ -18,9 +18,21 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[M_Build2Bit.nByteLength := SIZEOF(BYTE);
+        <ST><![CDATA[M_Build2Bit.nByteLength := 0 ;//SIZEOF(BYTE);
 M_Build2Bit.aMessage[1].0 := bInValueBit1;
 M_Build2Bit.aMessage[1].1 := bInValueBit2;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_Build3Byte" Id="{c46f181a-29fd-415d-9e09-b0a3d8c1d18d}">
+      <Declaration><![CDATA[METHOD M_Build3Byte : ST_KNXnetIP_Message
+VAR_INPUT
+	nInValue	: DWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[M_Build3Byte.nByteLength := SIZEOF(DWORD)-1;
+M_Build3Byte.aMessage[1] := DWORD_TO_BYTE(SHR(nInValue,8*3));
+M_Build3Byte.aMessage[2] := DWORD_TO_BYTE(SHR(nInValue,8*2));
+M_Build3Byte.aMessage[3] := DWORD_TO_BYTE(SHR(nInValue,8*1));]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_BuildBool" Id="{004b9732-fe8c-47e0-9a28-1f19ffc798d4}">
@@ -30,7 +42,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[M_BuildBool.nByteLength := SIZEOF(BOOL);
+        <ST><![CDATA[M_BuildBool.nByteLength := 0;//SIZEOF(BOOL);
 M_BuildBool.aMessage[1] := BOOL_TO_BYTE(bInValue);]]></ST>
       </Implementation>
     </Method>
@@ -55,9 +67,33 @@ M_BuildDimming.aMessage[1] := nResult;]]></ST>
 VAR_INPUT
 	fInValue	: REAL;
 END_VAR
-]]></Declaration>
+
+VAR
+	nValue		: WORD;
+	nExponent	: WORD;
+	isPositiv	: INT;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[M_BuildFloat16.nByteLength := SIZEOF(WORD);
+IF fInValue<0 THEN
+	isPositiv:=-1;
+ELSE
+	isPositiv:=1;
+END_IF
+
+IF ABS(fInValue) > 20.48 THEN
+	nExponent := DINT_TO_WORD(TRUNC((LOG(25*(fInValue*isPositiv))/LOG(2))-9)+1);
+ELSE
+	nExponent := 0;
+END_IF
+IF isPositiv<0THEN
+	nExponent:=nExponent+16;
+END_IF
+
+nValue:=REAL_TO_WORD(ABS(fInValue)/LREAL_TO_REAL(EXPT(2,nExponent))*100) + nExponent*2048;
+
+M_BuildFloat16.aMessage[1] := WORD_TO_BYTE(SHR(nValue,8));
+M_BuildFloat16.aMessage[2] := WORD_TO_BYTE(nValue);]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_BuildINT16" Id="{665b125b-14d4-4c4d-85fc-cef7579b9115}">
@@ -91,6 +127,27 @@ M_BuildINT32.aMessage[1] := DWORD_TO_BYTE(SHR(nWord,8*3));
 M_BuildINT32.aMessage[2] := DWORD_TO_BYTE(SHR(nWord,8*2));
 M_BuildINT32.aMessage[3] := DWORD_TO_BYTE(SHR(nWord,8));
 M_BuildINT32.aMessage[4] := DWORD_TO_BYTE(nWord);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_BuildString" Id="{13fbf79e-382a-42d0-a1f5-a404e60c77e3}">
+      <Declaration><![CDATA[METHOD M_BuildString : ST_KNXnetIP_Message
+VAR_INPUT
+	sInValue	: STRING;
+END_VAR
+VAR
+	i 			: INT := 0;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[M_BuildString.nByteLength := LIMIT(0,SIZEOF(sInValue),14);
+
+FOR i:=1 TO 15 BY 1 DO
+	IF sInValue[i-1] >= 32 AND sInValue[i-1] <= 122 THEN
+		M_BuildString.aMessage[i] := sInValue[i-1];
+	ELSE
+		M_BuildString.aMessage[i] := 0;
+	END_IF
+END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="M_BuildUINT16" Id="{de2685cb-52e0-4bc4-a06a-fc05d58820f7}">

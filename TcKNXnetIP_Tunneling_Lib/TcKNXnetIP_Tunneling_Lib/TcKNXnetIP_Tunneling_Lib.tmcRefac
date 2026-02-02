@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Refactors>
+  <Renames>
+    <RenamedSymbol>
+      <Type guid="13fbf79e-382a-42d0-a1f5-a404e60c77e3">M_BuildString</Type>
+      <From>nInValue</From>
+      <To>sInValue</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="e202703b-6f0f-4117-b799-0f532539a7b8">M_InterpretAsFloat32</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="645492f9-18c4-4f90-8fb1-b54d58cb0e2d">M_InterpretAs2Bit</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="2ddcc710-928d-48c3-a3f6-c43b38918035">M_InterpretAsBool</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="143d9181-0d00-4d88-a1c7-34f12b72adf9">M_InterpretAsDimming</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="53d6f035-7a63-4f7b-854c-2433a97caaa2">M_InterpretAsFloat16</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="0b31627f-6e0f-441c-bfc7-ded814e29f56">M_InterpretAsINT16</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="807cc6c2-55d5-47f3-b81a-90819bbd727c">M_InterpretAsINT32</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="c5321905-d1cb-401c-8b44-6c7dd303848c">M_InterpretAsUINT16</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="766d3e75-e0c8-4fec-af38-156e514382ed">M_InterpretAsUINT32</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+    <RenamedSymbol>
+      <Type guid="96608cde-e332-45f2-af3d-3230e4e9dcea">M_InterpretAsUINT8</Type>
+      <From>stInData</From>
+      <To>aInData</To>
+    </RenamedSymbol>
+  </Renames>
+</Refactors>

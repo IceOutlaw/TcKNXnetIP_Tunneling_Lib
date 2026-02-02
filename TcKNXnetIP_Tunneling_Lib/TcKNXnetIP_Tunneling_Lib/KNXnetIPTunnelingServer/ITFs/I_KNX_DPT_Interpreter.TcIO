@@ -6,59 +6,73 @@
     <Method Name="M_InterpretAs2Bit" Id="{66091294-439d-4614-a3f3-24b1c57c3dd4}">
       <Declaration><![CDATA[METHOD M_InterpretAs2Bit : ST_KNX_DPT_B2
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 ]]></Declaration>
     </Method>
     <Method Name="M_InterpretAsBool" Id="{59cb60ce-9f4b-4da2-ab52-ff9a107f3b72}">
       <Declaration><![CDATA[METHOD M_InterpretAsBool : BOOL
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 ]]></Declaration>
     </Method>
     <Method Name="M_InterpretAsDimming" Id="{7d273548-9943-40e1-9435-3b4660e712af}">
       <Declaration><![CDATA[METHOD M_InterpretAsDimming : ST_KNX_DPT_ControlDimming
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR]]></Declaration>
     </Method>
     <Method Name="M_InterpretAsFloat16" Id="{ea166d7f-9d93-4e3b-ad30-38ed3450886a}">
       <Declaration><![CDATA[METHOD M_InterpretAsFloat16 : REAL
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="M_InterpretAsFloat32" Id="{ec4095e0-de89-4da6-8872-91cb0fa9fd48}">
+      <Declaration><![CDATA[METHOD M_InterpretAsFloat32 : Real
+VAR_IN_OUT
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR
 ]]></Declaration>
     </Method>
     <Method Name="M_InterpretAsINT16" Id="{ddfdcc34-3a09-41e1-a4d1-3a9db6d7f146}">
       <Declaration><![CDATA[METHOD M_InterpretAsINT16 : INT
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR]]></Declaration>
     </Method>
     <Method Name="M_InterpretAsINT32" Id="{d212f266-b1d7-4635-8da3-d59af9c13f81}">
       <Declaration><![CDATA[METHOD M_InterpretAsINT32 : DINT
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR]]></Declaration>
     </Method>
     <Method Name="M_InterpretAsUINT16" Id="{33faba98-2ea6-4e4a-ae36-dfb6783a41f1}">
       <Declaration><![CDATA[METHOD M_InterpretAsUINT16 : UINT
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR]]></Declaration>
     </Method>
     <Method Name="M_InterpretAsUINT32" Id="{cf65e3be-abb2-4023-85dd-3439bf54739c}">
       <Declaration><![CDATA[METHOD M_InterpretAsUINT32 : UDINT
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR]]></Declaration>
     </Method>
     <Method Name="M_InterpretAsUINT8" Id="{c3f4480a-1ee3-4276-8307-4f619bec62d2}">
       <Declaration><![CDATA[METHOD M_InterpretAsUINT8 : BYTE
 VAR_IN_OUT
-	stInData		: ARRAY[*] OF BYTE;
+	aInData		: ARRAY[*] OF BYTE;
 END_VAR]]></Declaration>
+    </Method>
+    <Method Name="M_InterpretNewMessage" Id="{0bed79c4-83e7-459c-8517-2c6a14e1e1b8}">
+      <Declaration><![CDATA[METHOD M_InterpretNewMessage : BOOL
+VAR_IN_OUT
+	bInData		: BOOL;
+END_VAR
+]]></Declaration>
     </Method>
   </Itf>
 </TcPlcObject>

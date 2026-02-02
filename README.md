@@ -5,6 +5,7 @@ The library allows sending and receiving KNX telegrams via a KNXnet/IP interface
 
 The implementation has been tested with the following device:
 - **ABB IPS/S3.1.1 KNXnet/IP Interface (TCP/UDP Connection)**
+- **MDT SCN-IP000.03 KNXnet/IP Interface (TCP/UDP Connection)**
 
 Other KNXnet/IP devices may work but have not yet been tested.
 
