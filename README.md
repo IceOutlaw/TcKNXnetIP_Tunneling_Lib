@@ -1,6 +1,6 @@
-# TcKNXnetIP_Tunneling_Lib
+# KNX & TwinCAT Beckhoff - TcKNXnetIP_Tunneling_Lib
 
-TwinCAT 3 library implementing KNXnet/IP Tunneling communication over TCP
+Beckhoff TwinCAT 3 library implementing KNXnet/IP Tunneling communication over TCP
 The library allows sending and receiving KNX telegrams via a KNXnet/IP interface.
 
 The implementation has been tested with the following device:
